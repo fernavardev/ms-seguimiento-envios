@@ -1,6 +1,5 @@
 package com.fernavardev.ms_seguimiento_envios.controller;
 
-
 import com.fernavardev.ms_seguimiento_envios.model.Envio;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,23 +47,27 @@ public class EnvioController {
     }
 
     @GetMapping("/envios/{id}")
-    public Envio obtenerEnvioPorId(@PathVariable int id) {
+    public Object obtenerEnvioPorId(@PathVariable int id) {
         for (Envio envio : envios) {
             if (envio.getId() == id) {
                 return envio;
             }
         }
-        return null;
+        return "No se encontró un envío con id " + id;
     }
 
     @GetMapping("/envios/estado/{estado}")
-    public List<Envio> obtenerEnviosPorEstado(@PathVariable String estado) {
+    public Object obtenerEnviosPorEstado(@PathVariable String estado) {
         List<Envio> resultado = new ArrayList<>();
 
         for (Envio envio : envios) {
             if (envio.getEstado().equalsIgnoreCase(estado)) {
                 resultado.add(envio);
             }
+        }
+
+        if (resultado.isEmpty()) {
+            return "No existen envíos con estado: " + estado;
         }
 
         return resultado;
@@ -104,5 +107,27 @@ public class EnvioController {
         }
 
         return resultado;
+    }
+
+    @GetMapping("/envios/actualizar/{id}")
+    public String actualizarEnvioDemostrativo(@PathVariable int id) {
+        for (Envio envio : envios) {
+            if (envio.getId() == id) {
+                return "El envío con id " + id + " fue actualizado correctamente";
+            }
+        }
+
+        return "No se puede actualizar. No existe un envío con id " + id;
+    }
+
+    @GetMapping("/envios/cancelar/{id}")
+    public String cancelarEnvioDemostrativo(@PathVariable int id) {
+        for (Envio envio : envios) {
+            if (envio.getId() == id) {
+                return "El envío con id " + id + " fue cancelado correctamente";
+            }
+        }
+
+        return "No se puede cancelar. No existe un envío con id " + id;
     }
 }
