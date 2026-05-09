@@ -71,4 +71,32 @@ class EnvioServiceImplTest {
         verify(envioRepository).findById(1L);
         verify(envioRepository).save(envio);
     }
+
+    @Test
+    void deberiaCancelarEnvio() {
+        when(envioRepository.findById(1L)).thenReturn(Optional.of(envio));
+        when(envioRepository.save(any(Envio.class))).thenReturn(envio);
+
+        Envio resultado = envioService.cancelarEnvio(1L);
+
+        assertNotNull(resultado);
+        assertEquals("cancelado", resultado.getEstado());
+
+        verify(envioRepository).findById(1L);
+        verify(envioRepository).save(envio);
+    }
+
+    @Test
+    void deberiaObtenerEnviosPorCliente() {
+        List<Envio> listaMock = Arrays.asList(envio);
+
+        when(envioRepository.findByClienteIgnoreCase("Juan Perez")).thenReturn(listaMock);
+
+        List<Envio> resultado = envioService.getEnviosByCliente("Juan Perez");
+
+        assertEquals(1, resultado.size());
+        assertEquals("Juan Perez", resultado.get(0).getCliente());
+
+        verify(envioRepository).findByClienteIgnoreCase("Juan Perez");
+    }
 }
